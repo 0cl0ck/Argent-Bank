@@ -9,8 +9,8 @@ function SignIn() {
   const { isAuthenticated, status, error } = useSelector((state) => state.auth);
 
   React.useEffect(() => {
-    console.log("Auth status: ", isAuthenticated);
-    console.log("Error: ", error);
+    // console.log("Auth status: ", isAuthenticated);
+    // console.log("Error: ", error);
     if (isAuthenticated) {
       navigate("/dashboard");
     }
@@ -19,7 +19,6 @@ function SignIn() {
     event.preventDefault();
     const email = event.target.username.value;
     const password = event.target.password.value;
-    console.log(login({ email, password }));
     dispatch(login({ email, password }));
   };
 

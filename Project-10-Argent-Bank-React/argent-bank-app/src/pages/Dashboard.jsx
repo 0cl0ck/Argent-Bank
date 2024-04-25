@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserProfile } from "../apiServices";
 
 function Dashboard() {
+  const dispatch = useDispatch();
+  const { user, token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    console.log("Token:", token);
+    console.log("User:", user);
+    if (token && !user) {
+      console.log("Dispatching fetchUserProfile");
+      dispatch(fetchUserProfile(token));
+    }
+  }, [dispatch, token, user]);
+
   return (
     <>
       <div className="header">
         <h1>
           Welcome back
           <br />
-          Tony Jarvis!
+          {user ? `${user.firstName} ${user.lastName}` : "Guest"}!
         </h1>
         <button className="edit-button">Edit Name</button>
       </div>

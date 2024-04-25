@@ -1,3 +1,4 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 const API_BASE_URL = "http://localhost:3001/api/v1";
 
 // Fonction de connexion avec une requête POST à l'endpoint ../login pour authentifier l'utilisateur
@@ -9,7 +10,6 @@ export const loginApi = (email, password) => {
     },
     body: JSON.stringify({ email, password }),
   }).then((response) => {
-    console.log(response);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -18,20 +18,34 @@ export const loginApi = (email, password) => {
 };
 
 // Fonction pour récupérer les détails du profil de l'utilisateur avec une requête POST
-export const fetchUserProfile = (token) => {
-  return fetch(`${API_BASE_URL}/user/profile`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+export const fetchUserProfile = createAsyncThunk(
+  "auth/fetchUserProfile",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/v1/user/profile",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(response);
+      if (response.ok) {
+        console.log(response);
+
+        return data.body; // Assure-toi que tu extrais la partie correcte du corps de la réponse
+      } else {
+        throw new Error(data.message || "Failed to fetch user profile");
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
-    return response.json();
-  });
-};
+  }
+);
 
 // Fonction pour mettre à jour les détails du profil de l'utilisateur avec une requête PUT
 export const updateUserProfileApi = (userData, token) => {
