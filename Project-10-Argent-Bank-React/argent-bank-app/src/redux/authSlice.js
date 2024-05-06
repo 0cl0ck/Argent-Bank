@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { loginApi } from "../apiServices";
 import { useNavigate } from "react-router-dom";
 import { fetchUserProfile } from "../apiServices";
+import { updateUserProfileApi } from "../apiServices";
 
 // Thunk pour gérer la connexion
 export const login = createAsyncThunk(
@@ -22,6 +23,24 @@ export const login = createAsyncThunk(
         ? error.response.data.message
         : error.message;
       return rejectWithValue(message);
+    }
+  }
+);
+
+export const updateUserProfile = createAsyncThunk(
+  "auth/updateUserProfile",
+  async ({ userData, token }, { dispatch, rejectWithValue }) => {
+    try {
+      const data = await updateUserProfileApi(userData, token); // Pas besoin d'appeler .json() ici
+      if (data.status === 200) {
+        dispatch(setUser(data.body)); // Utilise data.body pour dispatcher les données utilisateur.
+        return data.body;
+      } else {
+        return rejectWithValue(data.message || "Failed to update user profile");
+      }
+    } catch (error) {
+      console.error("Error caught in updateUserProfile", error);
+      return rejectWithValue(error.toString());
     }
   }
 );
@@ -49,14 +68,14 @@ const authSlice = createSlice({
       state.user = null;
     },
     setUser: (state, action) => {
+      console.log("Setting user", action.payload);
       state.user = action.payload;
-      console.log("Updated state:", state.user);
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        state.user = action.payload; // Ici, tu mets à jour l'état avec les données de l'utilisateur
+        state.user = action.payload;
       })
       .addCase(login.fulfilled, (state, action) => {
         if (action.payload && action.payload.token) {
@@ -70,6 +89,13 @@ const authSlice = createSlice({
           state.status = "failed";
           state.error = "Invalid payload";
         }
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.user = { ...state.user, ...action.payload }; // Assure-toi que la structure de l'action.payload correspond à ce que ton API renvoie
+      })
+
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        console.error("Failed to update user:", action.payload);
       });
   },
 });

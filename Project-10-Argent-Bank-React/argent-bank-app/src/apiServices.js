@@ -56,10 +56,12 @@ export const updateUserProfileApi = (userData, token) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+  }).then(async (response) => {
+    const data = await response.json();
+    if (response.ok) {
+      return data; // Assure-toi que c'est ce format que tu attends partout où updateUserProfileApi est appelé
+    } else {
+      throw new Error(data.message || "Failed to update profile");
     }
-    return response.json();
   });
 };

@@ -1,30 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile } from "../apiServices";
+import EditNameModal from "./../components/EditNameModal.jsx";
 
 function Dashboard() {
   const dispatch = useDispatch();
   const { user, token } = useSelector((state) => state.auth);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    console.log("Token:", token);
-    console.log("User:", user);
     if (token && !user) {
       console.log("Dispatching fetchUserProfile");
       dispatch(fetchUserProfile(token));
     }
   }, [dispatch, token, user]);
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditing(false);
+  };
+
   return (
     <>
       <div className="header">
-        <h1>
-          Welcome back
-          <br />
-          {user ? `${user.firstName} ${user.lastName}` : "Guest"}!
-        </h1>
-        <button className="edit-button">Edit Name</button>
+        <h1>Welcome Back</h1>
+        {isEditing ? (
+          <EditNameModal user={user} token={token} onClose={handleCloseModal} />
+        ) : (
+          <>
+            <h1>{user ? `${user.firstName} ${user.lastName}` : "Guest"}!</h1>
+            <button className="edit-button" onClick={handleEditClick}>
+              Edit Name
+            </button>
+          </>
+        )}
       </div>
+
       <h2 className="sr-only">Accounts</h2>
       <section className="account">
         <div className="account-content-wrapper">
