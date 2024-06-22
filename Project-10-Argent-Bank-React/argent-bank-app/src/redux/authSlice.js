@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { loginApi } from "../apiServices";
-import { useNavigate } from "react-router-dom";
 import { fetchUserProfile } from "../apiServices";
 import { updateUserProfileApi } from "../apiServices";
 

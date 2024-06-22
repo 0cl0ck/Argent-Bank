@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateUserProfileApi } from "./../apiServices.js";
 import { updateUserProfile } from "./../redux/authSlice.js";
-// import '../sass/index.scss'
+import PropTypes from "prop-types";
 function EditNameModal({ user, token, onClose }) {
   const [firstName, setFirstName] = useState(user ? user.firstName : "");
   const [lastName, setLastName] = useState(user ? user.lastName : "");
@@ -46,3 +45,9 @@ function EditNameModal({ user, token, onClose }) {
 }
 
 export default EditNameModal;
+
+EditNameModal.propTypes = {
+  user: PropTypes.object,
+  token: PropTypes.string,
+  onClose: PropTypes.func.isRequired,
+};
