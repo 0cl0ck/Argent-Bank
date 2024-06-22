@@ -53,6 +53,55 @@ const initialState = {
   error: null,
 };
 
+// const authSlice = createSlice({
+//   name: "auth",
+//   initialState,
+//   reducers: {
+//     signIn(state, action) {
+//       state.isAuthenticated = true;
+//       state.token = action.payload.token;
+//       state.user = action.payload.user;
+//     },
+//     signOut: (state) => {
+//       state.isAuthenticated = false;
+//       state.token = null;
+//       state.user = null;
+//     },
+//     setUser: (state, action) => {
+//       console.log("Setting user", action.payload);
+//       state.user = action.payload;
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(fetchUserProfile.fulfilled, (state, action) => {
+//         state.user = action.payload;
+//       })
+//       .addCase(login.fulfilled, (state, action) => {
+//         if (action.payload && action.payload.token) {
+//           state.isAuthenticated = true;
+//           state.token = action.payload.token;
+//           // Ici, tu ne définis pas `state.user` parce que tu n'as pas encore les informations de l'utilisateur
+//           state.status = "succeeded";
+//           localStorage.setItem("authToken", action.payload.token);
+//           // Dispatch fetchUserProfile ici si tu es sûr que le token est maintenant stocké et prêt à être utilisé
+//         } else {
+//           state.status = "failed";
+//           state.error = "Invalid payload";
+//         }
+//       })
+//       .addCase(updateUserProfile.fulfilled, (state, action) => {
+//         state.user = { ...state.user, ...action.payload }; // Assure-toi que la structure de l'action.payload correspond à ce que ton API renvoie
+//       })
+
+//       .addCase(updateUserProfile.rejected, (state, action) => {
+//         console.error("Failed to update user:", action.payload);
+//       });
+//   },
+// });
+
+// export const { signIn, signOut, setUser } = authSlice.actions;
+// export default authSlice.reducer;
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -60,15 +109,14 @@ const authSlice = createSlice({
     signIn(state, action) {
       state.isAuthenticated = true;
       state.token = action.payload.token;
-      state.user = action.payload.user;
     },
     signOut: (state) => {
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
+      localStorage.removeItem("authToken");
     },
     setUser: (state, action) => {
-      console.log("Setting user", action.payload);
       state.user = action.payload;
     },
   },
@@ -81,19 +129,16 @@ const authSlice = createSlice({
         if (action.payload && action.payload.token) {
           state.isAuthenticated = true;
           state.token = action.payload.token;
-          // Ici, tu ne définis pas `state.user` parce que tu n'as pas encore les informations de l'utilisateur
           state.status = "succeeded";
           localStorage.setItem("authToken", action.payload.token);
-          // Dispatch fetchUserProfile ici si tu es sûr que le token est maintenant stocké et prêt à être utilisé
         } else {
           state.status = "failed";
           state.error = "Invalid payload";
         }
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.user = { ...state.user, ...action.payload }; // Assure-toi que la structure de l'action.payload correspond à ce que ton API renvoie
+        state.user = { ...state.user, ...action.payload };
       })
-
       .addCase(updateUserProfile.rejected, (state, action) => {
         console.error("Failed to update user:", action.payload);
       });

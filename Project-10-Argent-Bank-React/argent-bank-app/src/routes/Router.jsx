@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage.jsx";
 import Layout from "../layout/Layout.jsx";
 import SignIn from "../pages/SignIn.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -22,7 +23,11 @@ const BrowserRouter = createBrowserRouter([
       {
         path: "/dashboard",
         index: true,
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

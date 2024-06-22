@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateUserProfileApi } from "./../apiServices.js";
 import { updateUserProfile } from "./../redux/authSlice.js";
-
+// import '../sass/index.scss'
 function EditNameModal({ user, token, onClose }) {
   const [firstName, setFirstName] = useState(user ? user.firstName : "");
   const [lastName, setLastName] = useState(user ? user.lastName : "");
@@ -23,20 +23,24 @@ function EditNameModal({ user, token, onClose }) {
 
   return (
     <div className="edit-modal">
-      <input
-        type="text"
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
-        placeholder="First Name"
-      />
-      <input
-        type="text"
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
-        placeholder="Last Name"
-      />
-      <button onClick={handleSave}>Save</button>
-      <button onClick={onClose}>Cancel</button>
+      <div className="edit-modal-inputs">
+        <input
+          type="text"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          placeholder="First Name"
+        />
+        <input
+          type="text"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          placeholder="Last Name"
+        />
+      </div>
+      <div className="edit-modal-buttons">
+        <button onClick={handleSave}>Save</button>
+        <button onClick={onClose}>Cancel</button>
+      </div>
     </div>
   );
 }
